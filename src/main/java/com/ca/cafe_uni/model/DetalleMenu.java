@@ -1,6 +1,5 @@
 package com.ca.cafe_uni.model;
 
-
 import jakarta.persistence.*;
 
 import java.util.List;

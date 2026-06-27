@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Grand Central – UTP</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .top-nav {
+            background: #111111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+
+        }
+
+        body {
+            background-color: #d6d3cf;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+
+        .phone-frame {
+            width: 100%;
+            padding-bottom: 80px;
+            min-height: 100vh;
+            background: #ffffff;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-disponible {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 0 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: #111;
+        }
+
+        .punto-verde {
+            width: 12px;
+            height: 12px;
+            background: #2ecc71;
+            border-radius: 50%;
+            animation: pulso 2s infinite;
+        }
+
+        @keyframes pulso {
+            0%   { opacity: 1; }
+            50%  { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 1.5rem 1.2rem 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1rem;
+        }
+
+
+
+        .plato-card {
+            padding: 1rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .plato-img {
+            width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            max-height: 200px;
+        }
+
+        .plato-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding: 0.5rem 1.2rem;
+        }
+
+
+        .plato-nombre {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111;
+        }
+
+        .plato-resena {
+            font-size: 0.85rem;
+            color: #111;
+            text-decoration: underline;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 0;
+            z-index: 100;
+            box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-btn {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            color: #080808;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-btn.activo {
+            background: #111;
+            color: #fff;
+        }
+
+        .nav-btn svg path {
+            stroke: currentColor;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="phone-frame">
+    <div class="top-nav">
+        <a href="https://grandcentral.pe/" rel="home" aria-label="Logo de la página">
+            <img
+                    width="308" height="65"
+                    src="https://grandcentral.pe/wp-content/uploads/2025/10/LOGOTIPO-GRAN-CENTRAL-WHITE-2025.svg"
+                    alt="Grand Central"
+                    style="max-width: 200px;"
+                    decoding="async"
+            />
+        </a>
+    </div>
+
+    <!-- Muestra aviso si no hay menú hoy -->
+    <div th:if="${sinMenu}">
+        <p>No hay menú disponible para hoy.</p>
+    </div>
+
+    <div th:if="${menu}" class="menu-disponible">
+        <span>Menu del dia</span>
+        <span class="punto-verde"></span>
+    </div>
+
+    <!-- Sección EJECUTIVO -->
+    <!-- Sección EJECUTIVO -->
+    <div th:if="${menu}">
+        <p class="section-title">Menu Ejecutivo</p>
+        <div th:each="detalle : ${detalles}">
+            <div th:if="${detalle.tipoMenu != null and detalle.tipoMenu.nombre == 'ejecutivo'}" class="plato-card">
+                <img th:src="@{/images/{img}(img=${detalle.producto.imagen})}"
+                     th:alt="${detalle.producto.nombre}"
+                     class="plato-img"/>
+                <div class="plato-info">
+                    <p th:text="${detalle.producto.nombre}" class="plato-nombre">Nombre plato</p>
+                    <a th:href="@{/resenas/nueva/{id}(id=${detalle.idDetalle})}" class="plato-resena">Reseña</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección ESTUDIANTIL -->
+        <p class="section-title">Menu Estudiantil</p>
+        <div th:each="detalle : ${detalles}">
+            <div th:if="${detalle.tipoMenu != null and detalle.tipoMenu.nombre == 'estudiantil'}" class="plato-card">
+                <img th:src="@{/images/{img}(img=${detalle.producto.imagen})}"
+                     th:alt="${detalle.producto.nombre}"
+                     class="plato-img"/>
+                <div class="plato-info">
+                    <p th:text="${detalle.producto.nombre}" class="plato-nombre">Nombre plato</p>
+                    <a th:href="@{/resenas/nueva/{id}(id=${detalle.idDetalle})}" class="plato-resena">Reseña</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a th:href="@{/menu}" class="nav-btn activo">
+            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.4583 2.08335V1.04169M18.75 9.37502C18.75 7.44115 17.9818 5.58649 16.6143 4.21903C15.2469 2.85158 13.3922 2.08335 11.4583 2.08335C9.52445 2.08335 7.66979 2.85158 6.30234 4.21903C4.93488 5.58649 4.16666 7.44115 4.16666 9.37502M15 17.0834L18.3333 14.1667C18.5317 13.9752 18.7658 13.8246 19.0223 13.7236C19.2789 13.6226 19.5528 13.573 19.8285 13.5779C20.1042 13.5827 20.3762 13.6418 20.629 13.7518C20.8819 13.8617 21.1106 14.0204 21.3021 14.2188C21.4936 14.4171 21.6441 14.6512 21.7452 14.9078C21.8462 15.1643 21.8957 15.4383 21.8909 15.7139C21.886 15.9896 21.827 16.2616 21.717 16.5145C21.607 16.7673 21.4483 16.996 21.25 17.1875L17.5 20.625C16.7708 21.4583 15.7292 21.875 14.5833 21.875H10.4167C9.27082 21.875 8.22916 21.4583 7.49999 20.625L6.14374 19.1C6.04609 18.9901 5.92627 18.902 5.79216 18.8417C5.65804 18.7814 5.51267 18.7501 5.36561 18.75H4.16666M1.04166 13.5417H13.5417C14.0942 13.5417 14.6241 13.7612 15.0148 14.1519C15.4055 14.5426 15.625 15.0725 15.625 15.625C15.625 16.1776 15.4055 16.7075 15.0148 17.0982C14.6241 17.4889 14.0942 17.7084 13.5417 17.7084H11.4583M3.12499 9.37502H19.7917M4.16666 13.5417V19.7917C4.16666 20.068 4.05691 20.3329 3.86156 20.5283C3.66621 20.7236 3.40126 20.8334 3.12499 20.8334H1.04166"
+                      stroke="currentColor" stroke-width="2.08333" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+        <a th:href="@{/resenas}" class="nav-btn">
+            <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 13H5C3.93913 13 2.92172 13.4214 2.17157 14.1716C1.42143 14.9217 1 15.9391 1 17V19M14.051 10.616C14.1171 10.4133 14.2462 10.2371 14.4195 10.113C14.5928 9.98884 14.8012 9.92334 15.0143 9.92602C15.2275 9.9287 15.4342 9.99942 15.6043 10.1279C15.7744 10.2563 15.899 10.4357 15.96 10.64L16.697 12.092C16.7687 12.2332 16.8729 12.3553 17.0011 12.4483C17.1292 12.5413 17.2776 12.6025 17.434 12.627L19.068 12.883C19.2784 12.8838 19.4832 12.951 19.6532 13.0749C19.8232 13.1989 19.9498 13.3733 20.015 13.5734C20.0801 13.7735 20.0805 13.989 20.016 14.1893C19.9516 14.3896 19.8256 14.5645 19.656 14.689L18.484 15.857C18.3718 15.9687 18.2877 16.1055 18.2387 16.256C18.1897 16.4066 18.1771 16.5666 18.202 16.723L18.461 18.336C18.5323 18.5382 18.5367 18.7579 18.4736 18.9627C18.4105 19.1676 18.2832 19.3468 18.1106 19.4738C17.9379 19.6009 17.729 19.6691 17.5147 19.6684C17.3003 19.6677 17.0918 19.5982 16.92 19.47L15.455 18.72C15.3139 18.6477 15.1576 18.61 14.999 18.61C14.8404 18.61 14.6841 18.6477 14.543 18.72L13.078 19.47C12.9062 19.5971 12.6982 19.6658 12.4844 19.666C12.2707 19.6663 12.0626 19.598 11.8905 19.4713C11.7184 19.3446 11.5914 19.1661 11.5281 18.962C11.4649 18.7579 11.4687 18.5388 11.539 18.337L11.797 16.724C11.8219 16.5676 11.8093 16.4076 11.7603 16.257C11.7113 16.1065 11.6272 15.9697 11.515 15.858L10.359 14.705C10.1837 14.5835 10.0518 14.4092 9.98256 14.2074C9.91336 14.0056 9.9105 13.787 9.9744 13.5835C10.0383 13.38 10.1656 13.2022 10.3377 13.0762C10.5098 12.9502 10.7177 12.8825 10.931 12.883L12.564 12.627C12.7204 12.6025 12.8688 12.5413 12.9969 12.4483C13.1251 12.3553 13.2293 12.2332 13.301 12.092L14.051 10.616ZM12 5C12 7.20914 10.2091 9 8 9C5.79086 9 4 7.20914 4 5C4 2.79086 5.79086 1 8 1C10.2091 1 12 2.79086 12 5Z"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </nav>
+
+
+</div>
+
+
+</body>
+</html>

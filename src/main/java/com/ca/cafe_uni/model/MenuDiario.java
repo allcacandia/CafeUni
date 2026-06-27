@@ -28,4 +28,12 @@ public class MenuDiario {
     public void setIdMenu(Integer idMenu) {
         this.idMenu = idMenu;
     }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
+    }
 }

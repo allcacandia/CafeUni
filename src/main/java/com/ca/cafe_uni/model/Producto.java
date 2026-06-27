@@ -20,6 +20,9 @@ public class Producto {
     @Column(name = "categoria", nullable = false)
     private CategoriaProducto categoria;
 
+    @Column(name = "imagen")
+    private String imagen;
+
     public enum CategoriaProducto {
         plato, entrada, postre
     }
@@ -38,6 +41,14 @@ public class Producto {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     public CategoriaProducto getCategoria() {

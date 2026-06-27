@@ -23,8 +23,8 @@ public class MenuController {
         this.visitaService = visitaService;
     }
 
-
-    public String index(Model model, HttpServletRequest request) {
+    @GetMapping("/menu")
+    public String menu(Model model, HttpServletRequest request) {
 
             visitaService.registrar(request);
 
