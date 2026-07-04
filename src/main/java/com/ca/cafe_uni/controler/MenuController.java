@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,9 +25,14 @@ public class MenuController {
     }
 
     @GetMapping("/menu")
-    public String menu(Model model, HttpServletRequest request) {
+    public String menu(Model model, HttpServletRequest request,
+                       @RequestParam(required = false) String enviado) {
 
             visitaService.registrar(request);
+
+        if ("true".equals(enviado)) {
+            model.addAttribute("enviado", true);
+        }
 
         Optional<MenuDiario> menuOpt = menuService.obtenerMenuHoy();
 

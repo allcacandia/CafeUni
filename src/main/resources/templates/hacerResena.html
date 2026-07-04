@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Reseña – Grand Central</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-nav {
+            background: #111111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+        }
+
+        .contenido {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #111;
+            text-align: center;
+        }
+
+        .grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .grupo label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #111;
+            text-align: center;
+        }
+
+        .plato-img {
+            width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            max-height: 200px;
+        }
+
+        /* Estrellas */
+        .estrellas {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-direction: row-reverse;
+        }
+
+        .estrellas input {
+            display: none;
+        }
+
+        .estrellas label {
+            font-size: 2.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .estrellas input:checked ~ label,
+        .estrellas label:hover,
+        .estrellas label:hover ~ label {
+            color: #f5a623;
+        }
+
+        .btn-enviar {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-volver {
+            text-align: center;
+            color: #111;
+            font-size: 0.85rem;
+            text-decoration: underline;
+        }
+
+
+    </style>
+</head>
+
+<body>
+<div class="top-nav">
+    <a href="https://grandcentral.pe/" rel="home" aria-label="Logo de la página">
+        <img
+                width="308" height="65"
+                src="https://grandcentral.pe/wp-content/uploads/2025/10/LOGOTIPO-GRAN-CENTRAL-WHITE-2025.svg"
+                alt="Grand Central"
+                style="max-width: 200px;"
+                decoding="async"
+        />
+    </a>
+</div>
+
+<div class="contenido">
+
+    <div class="grupo">
+        <img th:if="${detalle}"
+             th:src="@{/images/{img}(img=${detalle.producto.imagen})}"
+             th:alt="${detalle.producto.nombre}"
+             class="plato-img"/>
+        <p th:if="${detalle}" th:text="${detalle.producto.nombre}"
+           style="text-align:center; font-weight:600; font-size:1.1rem;"></p>
+
+    </div>
+    <h2>¿Cómo estuvo tu experiencia?</h2>
+
+    <form th:action="@{/resenas/guardar/{id}(id=${idDetalle})}" method="post">
+
+        <div class="grupo">
+            <!-- Calificación del plato -->
+            <label>Calificación del plato</label>
+            <div class="estrellas">
+                <input type="radio" name="calificacionPlato" id="plato5" value="5"/>
+                <label for="plato5">★</label>
+                <input type="radio" name="calificacionPlato" id="plato4" value="4"/>
+                <label for="plato4">★</label>
+                <input type="radio" name="calificacionPlato" id="plato3" value="3"/>
+                <label for="plato3">★</label>
+                <input type="radio" name="calificacionPlato" id="plato2" value="2"/>
+                <label for="plato2">★</label>
+                <input type="radio" name="calificacionPlato" id="plato1" value="1"/>
+                <label for="plato1">★</label>
+            </div>
+        </div>
+
+        <!-- Calificación del servicio -->
+        <div class="grupo">
+            <label>Calificación del servicio</label>
+            <div class="estrellas">
+                <input type="radio" name="calificacionServicio" id="servicio5" value="5"/>
+                <label for="servicio5">★</label>
+                <input type="radio" name="calificacionServicio" id="servicio4" value="4"/>
+                <label for="servicio4">★</label>
+                <input type="radio" name="calificacionServicio" id="servicio3" value="3"/>
+                <label for="servicio3">★</label>
+                <input type="radio" name="calificacionServicio" id="servicio2" value="2"/>
+                <label for="servicio2">★</label>
+                <input type="radio" name="calificacionServicio" id="servicio1" value="1"/>
+                <label for="servicio1">★</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-enviar">Enviar reseña</button>
+    </form>
+    <a th:href="@{/menu}" class="btn-volver">← Volver al menú</a>
+</div>
+
+</body>
+</html>

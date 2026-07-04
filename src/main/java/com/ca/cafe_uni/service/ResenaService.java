@@ -6,6 +6,10 @@ import com.ca.cafe_uni.repository.DetalleMenuRepository;
 import com.ca.cafe_uni.repository.ResenaRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Service
@@ -17,6 +21,16 @@ public class ResenaService {
     public ResenaService(ResenaRepository resenaRepository, DetalleMenuRepository detalleMenuRepository) {
         this.resenaRepository = resenaRepository;
         this.detalleMenuRepository = detalleMenuRepository;
+    }
+
+    public List<Resena> listarPorSemana() {
+        LocalDateTime inicio = LocalDate.now()
+                .with(DayOfWeek.MONDAY)
+                .atStartOfDay();
+        LocalDateTime fin = LocalDate.now()
+                .with(DayOfWeek.SUNDAY)
+                .atTime(23, 59, 59);
+        return resenaRepository.findByDetalleMenu_MenuDiario_FechaBetween(inicio, fin);
     }
 
     public List<Resena> listarTodas() {

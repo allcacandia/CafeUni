@@ -154,6 +154,28 @@
             stroke: currentColor;
         }
 
+        .popup {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+            white-space: nowrap;
+        }
+
+        .popup.visible {
+            opacity: 1;
+        }
+
     </style>
 </head>
 
@@ -182,7 +204,6 @@
         <span class="punto-verde"></span>
     </div>
 
-    <!-- Sección EJECUTIVO -->
     <!-- Sección EJECUTIVO -->
     <div th:if="${menu}">
         <p class="section-title">Menu Ejecutivo</p>
@@ -227,6 +248,17 @@
             </svg>
         </a>
     </nav>
+
+    <!-- Popup con Thymeleaf, sin JavaScript -->
+    <div th:if="${enviado}" class="popup visible" id="popup">
+        ✓ Reseña enviada
+    </div>
+
+    <script th:if="${enviado}">
+        setTimeout(() => {
+            document.getElementById('popup').classList.remove('visible');
+        }, 4000);
+    </script>
 
 
 </div>

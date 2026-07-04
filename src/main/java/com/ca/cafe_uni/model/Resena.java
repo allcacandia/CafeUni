@@ -7,10 +7,9 @@ import jakarta.persistence.*;
 @Table(name = "RESENA")
 public class Resena {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "id_resena", nullable = false)
     private Integer idResena;
 
     @ManyToOne
