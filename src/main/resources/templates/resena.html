@@ -224,7 +224,8 @@
             <!-- Estrellas -->
             <div class="estrellas-display">
                 <span th:each="i : ${#numbers.sequence(1, resena.calificacionPlato)}">★</span>
-                <span th:each="i : ${#numbers.sequence(resena.calificacionPlato + 1, 5)}">☆</span>
+                <span th:if="${resena.calificacionPlato < 5}"
+                      th:each="i : ${#numbers.sequence(resena.calificacionPlato +   1, 5)}">☆</span>
             </div>
         </div>
 

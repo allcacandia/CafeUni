@@ -1,5 +1,7 @@
 package com.ca.cafe_uni.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import jakarta.persistence.*;
 
@@ -14,10 +16,12 @@ public class Producto {
     private Integer idProducto;
 
     @Column(name = "nombre", nullable = false, length = 50)
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "categoria", nullable = false)
+    @NotNull(message = "La categoria es obligatoria")
+    @Column(name = "categoria", nullable = false, length = 20)
     private CategoriaProducto categoria;
 
     @Column(name = "imagen")

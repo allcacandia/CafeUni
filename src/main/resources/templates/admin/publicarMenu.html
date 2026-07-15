@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Dashboard – Admin</title>
+    <title>Publicar Menú – Admin</title>
     <style>
         * {
             box-sizing: border-box;
@@ -17,7 +17,6 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
         }
 
         .phone-frame {
@@ -33,7 +32,6 @@
             gap: 1.5rem;
         }
 
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -61,175 +59,187 @@
             justify-content: center;
         }
 
-        /* Sección título */
         .seccion-titulo {
             font-size: 1.1rem;
             font-weight: 700;
             color: #111;
             padding-bottom: 0.5rem;
-            border-bottom: 2.5px solid #8bc34a;
+            border-bottom: 2.5px solid #f5a623;
         }
 
-        /* Tarjeta de acciones */
-        .buttoms {
-            background: #f5f5f5;
-            border-radius: 16px;
-            padding: 1.4rem;
-            display: flex;
-            gap: 1rem;
-            /*width: 330px;*/
+        /* Alerta menú ya publicado */
+        .alerta {
+            background: #fff3e0;
+            border: 1px solid #f5a623;
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            font-size: 0.85rem;
+            color: #b36b00;
+            text-align: center;
         }
 
-        /* Estilo común */
-        .btn-producto,
-        .btn-menu {
-            flex: 1;
-            height: 100px;
-            border-radius: 18px;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: .9rem;
-
-            text-decoration: none;
-            color: #4B3B1F;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 570;
-            font-size: 1.0rem;
-
-            transition: .2s ease;
-            cursor: pointer;
-        }
-
-        /* Colores del Figma */
-        .btn-producto {
-            background: linear-gradient(180deg, #9EDC33 0%, #C7FF4A 100%);
-        }
-
-        .btn-menu {
-            background: linear-gradient(180deg, #FF8500 0%, #FFA437 100%);
-        }
-
-        .btn-producto:hover,
-        .btn-menu:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, .15);
-        }
-
-        .btn-icon {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .btn-icon svg {
-            width: 25px;
-            height: 25px;
-        }
-
-        .btn-icon path {
-            stroke: #5E481F;
-        }
-
-        .reporte-card {
-            background: #f5f5f5;
-            border-radius: 16px;
-            padding: 1.2rem;
+        /* Card de cada tipo de menú */
+        .menu-seccion {
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
         }
 
-        .reporte-titulo {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .sin-datos {
-            text-align: center;
-            color: #aaa;
+        .menu-seccion-titulo {
             font-size: 0.85rem;
-            padding: 1.5rem 0;
-        }
-
-        canvas {
-            max-height: 220px;
-        }
-
-        .reporte-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .selector-reporte {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 0.4rem 0.6rem;
-            font-size: 0.78rem;
-            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
             color: #555;
-            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .lista-semana {
-            list-style: none;
+        /* Lista de productos seleccionados */
+        .productos-seleccionados {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
 
-        .lista-semana li {
-            background: #fff;
+        .producto-seleccionado {
+            background: #f5f5f5;
             border-radius: 10px;
-            padding: 0.6rem 0.9rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            color: #111;
             display: flex;
             justify-content: space-between;
-            font-size: 0.85rem;
+            align-items: center;
         }
 
-        .dia-nombre {
-            font-weight: 600;
-            color: #555;
-            text-transform: capitalize;
+        .btn-quitar {
+            background: none;
+            border: none;
+            color: #cc0000;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0 0.25rem;
         }
 
-        .dia-plato {
-            color: #111;
+        /* Dropdown agregar */
+        .dropdown-wrapper {
+            position: relative;
         }
 
-        .btn-generar-reporte {
-            background: #111;
-            color: #fff;
-            text-decoration: none;
-            text-align: center;
-            padding: 0.85rem;
+        .btn-agregar {
+            width: 100%;
+            background: #f0f0f0;
+            border: none;
             border-radius: 12px;
+            padding: 0.75rem 1rem;
             font-size: 0.9rem;
-            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .btn-agregar:hover {
+            background: #e8e8e8;
+        }
+
+        .dropdown-lista {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .dropdown-lista.abierto {
             display: block;
         }
 
-        /* ── Footer ── */
-        .footer {
-            border-top: 1px solid #e5e3e0;
-            padding: 14px 18px;
-            display: flex;
-            justify-content: center;
-            flex-shrink: 0;
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #111;
+            transition: background 0.15s;
         }
 
+        .dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .dropdown-item.seleccionado {
+            color: #aaa;
+            cursor: default;
+        }
+
+        /* Botón publicar */
+        .btn-publicar {
+            background: linear-gradient(135deg, #f5a623, #e8890a);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .btn-publicar:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-volver {
+            text-align: center;
+            color: #888;
+            font-size: 0.82rem;
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+            padding-top: 1rem;
+        }
+
+        /* Popup */
+        .popup {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+            white-space: nowrap;
+        }
+
+        .popup.visible {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
 
 <div class="phone-frame">
 
-    <!-- Header -->
     <div class="header">
         <div class="header-texto">
             <p>Bienvenido de vuelta</p>
@@ -243,91 +253,118 @@
         </div>
     </div>
 
-    <!-- Título sección -->
-    <p class="seccion-titulo">Acciones</p>
+    <p class="seccion-titulo">Menu del dia</p>
 
-    <div class="buttoms">
-
-        <a th:href="@{/gestion-interna/producto}" class="btn-producto">
-            <span>Producto</span>
-
-            <span class="btn-icon">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                <path d="M7 11H15M11 7V15M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z"
-                      stroke="black"
-                      stroke-opacity="0.6"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"/>
-            </svg>
-        </span>
-        </a>
-
-        <a th:href="@{/gestion-interna/publicarMenu}" class="btn-menu">
-            <span>Publicar Menú</span>
-
-            <span class="btn-icon">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                <path d="M7 11H15M11 7V15M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z"
-                      stroke="black"
-                      stroke-opacity="0.6"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"/>
-            </svg>
-        </span>
-        </a>
+    <!-- Alerta si ya existe menú hoy -->
+    <div th:if="${menuExiste}" class="alerta">
+        Ya existe un menú publicado para hoy. No se puede publicar otro.
     </div>
 
-    <p class="seccion-titulo">Reportes</p>
+    <form th:action="@{/gestion-interna/publicarMenu/publicar}" method="post" id="formMenu">
 
-    <a th:href="@{/gestion-interna/reportes/excel}" class="btn-generar-reporte">
-        📊 Generar Reporte Excel
-    </a>
+        <!-- ── MENÚ EJECUTIVO ── -->
+        <div class="menu-seccion">
+            <p class="menu-seccion-titulo">Menú Ejecutivo</p>
+            <div class="productos-seleccionados" id="lista-ejecutivo"></div>
+            <div class="dropdown-wrapper">
+                <button type="button" class="btn-agregar"
+                        onclick="toggleDropdown('dropdown-ejecutivo')">
+                    Agregar <span>›</span>
+                </button>
+                <div class="dropdown-lista" id="dropdown-ejecutivo">
+                    <div th:each="p : ${platos}"
+                         class="dropdown-item"
+                         th:data-id="${p.idProducto}"
+                         th:data-nombre="${p.nombre}"
+                         onclick="seleccionarProducto(this, 'ejecutivo')">
+                        <span th:text="${p.nombre}"></span>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Reporte: Mejor calificado -->
-    <div class="reporte-card">
-        <div class="reporte-header">
-            <p class="reporte-titulo" id="tituloCalificacion">Mejor calificado hoy</p>
-            <select id="selectorCalificacion" class="selector-reporte" onchange="cambiarVistaCalificacion()">
-                <option value="hoy">Hoy</option>
-                <option value="semana">Esta semana</option>
-            </select>
         </div>
 
-        <div th:if="${#maps.isEmpty(mejoresCalificados)}" class="sin-datos" id="sinDatosHoy">
-            Aún no hay reseñas hoy.
-        </div>
-        <canvas id="chartCalificaciones" th:unless="${#maps.isEmpty(mejoresCalificados)}"></canvas>
+        <div style="height: 1px; background: #f0f0f0; margin: 0.5rem 0;"></div>
 
-        <div th:if="${#maps.isEmpty(mejoresCalificadosSemana)}" class="sin-datos" id="sinDatosSemana" style="display:none;">
-            Aún no hay reseñas esta semana.
-        </div>
-        <ul id="listaSemana" class="lista-semana" style="display:none;">
-            <li th:each="entry : ${mejoresCalificadosSemana}">
-                <span class="dia-nombre" th:text="${entry.key}"></span>
-                <span class="dia-plato" th:text="${entry.value}"></span>
-            </li>
-        </ul>
-    </div>
+        <!-- ── MENÚ ESTUDIANTIL ── -->
+        <div class="menu-seccion">
+            <p class="menu-seccion-titulo">Menú Estudiantil</p>
+            <div class="productos-seleccionados" id="lista-estudiantil"></div>
+            <div class="dropdown-wrapper">
+                <button type="button" class="btn-agregar"
+                        onclick="toggleDropdown('dropdown-estudiantil')">
+                    Agregar <span>›</span>
+                </button>
+                <div class="dropdown-lista" id="dropdown-estudiantil">
+                    <div th:each="p : ${platos}"
+                         class="dropdown-item"
+                         th:data-id="${p.idProducto}"
+                         th:data-nombre="${p.nombre}"
+                         onclick="seleccionarProducto(this, 'estudiantil')">
+                        <span th:text="${p.nombre}"></span>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Reporte: Visitas de la semana -->
-    <div class="reporte-card">
-        <p class="reporte-titulo">Visitas — últimos 7 días</p>
-        <div th:if="${#maps.isEmpty(visitasSemana)}" class="sin-datos">
-            Aún no hay visitas registradas.
         </div>
-        <canvas id="chartVisitas" th:unless="${#maps.isEmpty(visitasSemana)}"></canvas>
-    </div>
 
-    <!-- Reporte: Dispositivos -->
-    <div class="reporte-card">
-        <p class="reporte-titulo">Visitas por dispositivo</p>
-        <div th:if="${#maps.isEmpty(visitasPorDispositivo)}" class="sin-datos">
-            Aún no hay datos de dispositivos.
+        <div style="height: 1px; background: #f0f0f0; margin: 0.5rem 0;"></div>
+
+        <!-- ── ENTRADAS ── -->
+        <div class="menu-seccion">
+            <p class="menu-seccion-titulo">Entrada</p>
+            <div class="productos-seleccionados" id="lista-entrada"></div>
+            <div class="dropdown-wrapper">
+                <button type="button" class="btn-agregar"
+                        onclick="toggleDropdown('dropdown-entrada')">
+                    Agregar <span>›</span>
+                </button>
+                <div class="dropdown-lista" id="dropdown-entrada">
+                    <div th:each="p : ${entradas}"
+                         class="dropdown-item"
+                         th:data-id="${p.idProducto}"
+                         th:data-nombre="${p.nombre}"
+                         onclick="seleccionarProducto(this, 'entrada')">
+                        <span th:text="${p.nombre}"></span>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <canvas id="chartDispositivos" th:unless="${#maps.isEmpty(visitasPorDispositivo)}"></canvas>
-    </div>
+
+        <div style="height: 1px; background: #f0f0f0; margin: 0.5rem 0;"></div>
+
+        <!-- ── POSTRES ── -->
+        <div class="menu-seccion">
+            <p class="menu-seccion-titulo">Postre</p>
+            <div class="productos-seleccionados" id="lista-postre"></div>
+            <div class="dropdown-wrapper">
+                <button type="button" class="btn-agregar"
+                        onclick="toggleDropdown('dropdown-postre')">
+                    Agregar <span>›</span>
+                </button>
+                <div class="dropdown-lista" id="dropdown-postre">
+                    <div th:each="p : ${postres}"
+                         class="dropdown-item"
+                         th:data-id="${p.idProducto}"
+                         th:data-nombre="${p.nombre}"
+                         onclick="seleccionarProducto(this, 'postre')">
+                        <span th:text="${p.nombre}"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Botón publicar -->
+        <button type="submit" class="btn-publicar"
+                th:disabled="${menuExiste}">
+            Publicar Menú
+        </button>
+
+    </form>
+
+    <a th:href="@{/gestion-interna/dashboard}" class="btn-volver">← Volver al dashboard</a>
 
     <!-- Footer -->
     <div class="footer">
@@ -363,95 +400,72 @@
             </a>
         </div>
     </div>
-
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    const calificaciones = /*[[${mejoresCalificados}]]*/ {};
-    const visitas = /*[[${visitasSemana}]]*/ {};
-    const dispositivos = /*[[${visitasPorDispositivo}]]*/ {};
-    /*]]>*/
+<!-- Popup publicado -->
+<div class="popup" id="popup"
+     th:if="${publicado}"
+     th:data-visible="true">
+    ✓ Menú publicado correctamente
+</div>
 
-    if (Object.keys(calificaciones).length > 0) {
-        new Chart(document.getElementById('chartCalificaciones'), {
-            type: 'bar',
-            data: {
-                labels: Object.keys(calificaciones),
-                datasets: [{
-                    label: 'Calificación promedio',
-                    data: Object.values(calificaciones),
-                    backgroundColor: '#8bc34a',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                scales: { y: { beginAtZero: true, max: 5 } },
-                plugins: { legend: { display: false } }
-            }
-        });
+<script>
+    // Popup
+    const popup = document.getElementById('popup');
+    if (popup && popup.getAttribute('data-visible')) {
+        popup.classList.add('visible');
+        setTimeout(() => popup.classList.remove('visible'), 2500);
     }
 
-    if (Object.keys(visitas).length > 0) {
-        new Chart(document.getElementById('chartVisitas'), {
-            type: 'line',
-            data: {
-                labels: Object.keys(visitas),
-                datasets: [{
-                    label: 'Visitas',
-                    data: Object.values(visitas),
-                    borderColor: '#ff8500',
-                    backgroundColor: 'rgba(255,133,0,0.15)',
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                scales: { y: { beginAtZero: true } },
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
-
-    if (Object.keys(dispositivos).length > 0) {
-        new Chart(document.getElementById('chartDispositivos'), {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(dispositivos),
-                datasets: [{
-                    data: Object.values(dispositivos),
-                    backgroundColor: ['#8bc34a', '#ff8500', '#4a90d9', '#aaaaaa']
-                }]
-            },
-            options: {
-                plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
-            }
-        });
-    }
-
-    // Toggle entre "hoy" y "semana"
-    function cambiarVistaCalificacion() {
-        const valor = document.getElementById('selectorCalificacion').value;
-        const titulo = document.getElementById('tituloCalificacion');
-        const chartHoy = document.getElementById('chartCalificaciones');
-        const sinDatosHoy = document.getElementById('sinDatosHoy');
-        const listaSemana = document.getElementById('listaSemana');
-        const sinDatosSemana = document.getElementById('sinDatosSemana');
-
-        if (valor === 'hoy') {
-            titulo.textContent = 'Mejor calificado hoy';
-            if (chartHoy) chartHoy.style.display = 'block';
-            if (sinDatosHoy) sinDatosHoy.style.display = 'block';
-            listaSemana.style.display = 'none';
-            if (sinDatosSemana) sinDatosSemana.style.display = 'none';
-        } else {
-            titulo.textContent = 'Mejores calificados de esta semana';
-            if (chartHoy) chartHoy.style.display = 'none';
-            if (sinDatosHoy) sinDatosHoy.style.display = 'none';
-            listaSemana.style.display = 'flex';
-            if (sinDatosSemana) sinDatosSemana.style.display = 'block';
+    // Cerrar dropdowns al hacer click fuera
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.dropdown-wrapper')) {
+            document.querySelectorAll('.dropdown-lista').forEach(d => d.classList.remove('abierto'));
         }
+    });
+
+    function toggleDropdown(id) {
+        const dropdown = document.getElementById(id);
+        const estaAbierto = dropdown.classList.contains('abierto');
+        document.querySelectorAll('.dropdown-lista').forEach(d => d.classList.remove('abierto'));
+        if (!estaAbierto) dropdown.classList.add('abierto');
+    }
+
+    // Seleccionar producto del dropdown
+    function seleccionarProducto(item, tipo) {
+        if (item.classList.contains('seleccionado')) return;
+
+        const id = item.getAttribute('data-id');
+        const nombre = item.getAttribute('data-nombre');
+
+        agregarProductoAlista(id, nombre, tipo);
+        item.classList.add('seleccionado');
+
+        document.getElementById('dropdown-' + tipo).classList.remove('abierto');
+    }
+
+    function agregarProductoAlista(id, nombre, tipo) {
+        const lista = document.getElementById('lista-' + tipo);
+
+        const div = document.createElement('div');
+        div.className = 'producto-seleccionado';
+        div.innerHTML = `
+            <span>${nombre}</span>
+            <input type="hidden" name="${tipo}" value="${id}">
+            <button type="button" class="btn-quitar" onclick="quitarProducto(this, '${id}', '${tipo}')">✕</button>
+        `;
+        lista.appendChild(div);
+    }
+
+    function quitarProducto(btn, id, tipo) {
+        // Reactivar en el dropdown
+        const items = document.querySelectorAll(`#dropdown-${tipo} .dropdown-item`);
+        items.forEach(item => {
+            if (item.getAttribute('data-id') === id) {
+                item.classList.remove('seleccionado');
+            }
+        });
+        btn.closest('.producto-seleccionado').remove();
     }
 </script>
 

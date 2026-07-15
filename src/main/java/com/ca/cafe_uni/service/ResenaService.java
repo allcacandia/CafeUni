@@ -4,6 +4,8 @@ import com.ca.cafe_uni.model.DetalleMenu;
 import com.ca.cafe_uni.model.Resena;
 import com.ca.cafe_uni.repository.DetalleMenuRepository;
 import com.ca.cafe_uni.repository.ResenaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -17,6 +19,7 @@ public class ResenaService {
 
     private final ResenaRepository resenaRepository;
     private final DetalleMenuRepository detalleMenuRepository;
+    private static final Logger logger = LoggerFactory.getLogger(ResenaService.class);
 
     public ResenaService(ResenaRepository resenaRepository, DetalleMenuRepository detalleMenuRepository) {
         this.resenaRepository = resenaRepository;
@@ -42,8 +45,12 @@ public class ResenaService {
     }
 
     public Resena guardar(Resena resena, Integer idDetalle) {
+        logger.info("Guardando reseña para idDetalle={}", idDetalle);
         DetalleMenu detalle = detalleMenuRepository.findById(idDetalle)
-                .orElseThrow(() -> new IllegalArgumentException("Detalle no encontrado: " + idDetalle));
+                .orElseThrow(() -> {
+                    logger.error("Detalle no encontrado con id={}", idDetalle);
+                    return new IllegalArgumentException("Detalle no encontrado: " + idDetalle);
+                });
         resena.setDetalleMenu(detalle);
         return resenaRepository.save(resena);
     }

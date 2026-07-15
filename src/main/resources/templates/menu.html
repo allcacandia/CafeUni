@@ -204,8 +204,9 @@
         <span class="punto-verde"></span>
     </div>
 
-    <!-- Sección EJECUTIVO -->
+
     <div th:if="${menu}">
+        <!-- Sección EJECUTIVO -->
         <p class="section-title">Menu Ejecutivo</p>
         <div th:each="detalle : ${detalles}">
             <div th:if="${detalle.tipoMenu != null and detalle.tipoMenu.nombre == 'ejecutivo'}" class="plato-card">
@@ -223,6 +224,34 @@
         <p class="section-title">Menu Estudiantil</p>
         <div th:each="detalle : ${detalles}">
             <div th:if="${detalle.tipoMenu != null and detalle.tipoMenu.nombre == 'estudiantil'}" class="plato-card">
+                <img th:src="@{/images/{img}(img=${detalle.producto.imagen})}"
+                     th:alt="${detalle.producto.nombre}"
+                     class="plato-img"/>
+                <div class="plato-info">
+                    <p th:text="${detalle.producto.nombre}" class="plato-nombre">Nombre plato</p>
+                    <a th:href="@{/resenas/nueva/{id}(id=${detalle.idDetalle})}" class="plato-resena">Reseña</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección ENTRADA -->
+        <p class="section-title">Entradas</p>
+        <div th:each="detalle : ${detalles}">
+            <div th:if="${detalle.producto.categoria.name() == 'entrada'}" class="plato-card">
+                <img th:src="@{/images/{img}(img=${detalle.producto.imagen})}"
+                     th:alt="${detalle.producto.nombre}"
+                     class="plato-img"/>
+                <div class="plato-info">
+                    <p th:text="${detalle.producto.nombre}" class="plato-nombre">Nombre plato</p>
+                    <a th:href="@{/resenas/nueva/{id}(id=${detalle.idDetalle})}" class="plato-resena">Reseña</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección POSTRE -->
+        <p class="section-title">Postres</p>
+        <div th:each="detalle : ${detalles}">
+            <div th:if="${detalle.producto.categoria.name() == 'postre'}" class="plato-card">
                 <img th:src="@{/images/{img}(img=${detalle.producto.imagen})}"
                      th:alt="${detalle.producto.nombre}"
                      class="plato-img"/>
@@ -262,7 +291,5 @@
 
 
 </div>
-
-
 </body>
 </html>

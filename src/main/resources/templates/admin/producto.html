@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Dashboard – Admin</title>
+    <title>Producto – Admin</title>
     <style>
         * {
             box-sizing: border-box;
@@ -22,6 +22,7 @@
 
         .phone-frame {
             width: 100%;
+            padding-bottom: 80px;
             min-height: 100vh;
             background: #ffffff;
             border-radius: 0;
@@ -70,148 +71,189 @@
             border-bottom: 2.5px solid #8bc34a;
         }
 
-        /* Tarjeta de acciones */
-        .buttoms {
-            background: #f5f5f5;
-            border-radius: 16px;
-            padding: 1.4rem;
-            display: flex;
-            gap: 1rem;
-            /*width: 330px;*/
-        }
-
-        /* Estilo común */
-        .btn-producto,
-        .btn-menu {
-            flex: 1;
-            height: 100px;
-            border-radius: 18px;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: .9rem;
-
-            text-decoration: none;
-            color: #4B3B1F;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 570;
-            font-size: 1.0rem;
-
-            transition: .2s ease;
-            cursor: pointer;
-        }
-
-        /* Colores del Figma */
-        .btn-producto {
-            background: linear-gradient(180deg, #9EDC33 0%, #C7FF4A 100%);
-        }
-
-        .btn-menu {
-            background: linear-gradient(180deg, #FF8500 0%, #FFA437 100%);
-        }
-
-        .btn-producto:hover,
-        .btn-menu:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, .15);
-        }
-
-        .btn-icon {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .btn-icon svg {
-            width: 25px;
-            height: 25px;
-        }
-
-        .btn-icon path {
-            stroke: #5E481F;
-        }
-
-        .reporte-card {
+        /* Formulario */
+        .form-card {
             background: #f5f5f5;
             border-radius: 16px;
             padding: 1.2rem;
             display: flex;
             flex-direction: column;
+            gap: 1rem;
+        }
+
+        .campo-nombre input {
+            width: 100%;
+            background: #e8e8e8;
+            border: none;
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            font-size: 0.95rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            color: #111;
+        }
+
+        .campo-nombre input::placeholder {
+            color: #aaa;
+        }
+
+        .campos-row {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .campo-categoria, .campo-imagen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .campo-categoria label, .campo-imagen label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .campo-categoria select {
+            background: #e8e8e8;
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            color: #111;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%23555' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 2rem;
+        }
+
+        .btn-imagen {
+            background: #e8e8e8;
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            color: #555;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .nombre-archivo {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.2rem;
+        }
+
+        /* Error de validación */
+        .error-msg {
+            background: #fff0f0;
+            border: 1px solid #ffcccc;
+            color: #cc0000;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            text-align: center;
+        }
+
+        /* Popup guardado */
+        .popup {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+            white-space: nowrap;
+        }
+
+        .popup.visible {
+            opacity: 1;
+        }
+
+        /* Botón agregar */
+        .btn-agregar {
+            background: linear-gradient(135deg, #8bc34a, #cddc39);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Lista productos */
+        .seccion-productos {
+            display: flex;
+            flex-direction: column;
             gap: 0.75rem;
         }
 
-        .reporte-titulo {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .sin-datos {
-            text-align: center;
-            color: #aaa;
-            font-size: 0.85rem;
-            padding: 1.5rem 0;
-        }
-
-        canvas {
-            max-height: 220px;
-        }
-
-        .reporte-header {
+        .producto-item {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .selector-reporte {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 0.4rem 0.6rem;
-            font-size: 0.78rem;
-            font-family: 'Montserrat', sans-serif;
-            color: #555;
-            cursor: pointer;
-        }
-
-        .lista-semana {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .lista-semana li {
-            background: #fff;
-            border-radius: 10px;
-            padding: 0.6rem 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-        }
-
-        .dia-nombre {
+        .producto-nombre {
+            font-size: 0.95rem;
             font-weight: 600;
-            color: #555;
-            text-transform: capitalize;
-        }
-
-        .dia-plato {
             color: #111;
         }
 
-        .btn-generar-reporte {
-            background: #111;
-            color: #fff;
-            text-decoration: none;
+        .producto-categoria {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: capitalize;
+        }
+
+        .sin-productos {
             text-align: center;
-            padding: 0.85rem;
-            border-radius: 12px;
+            color: #aaa;
             font-size: 0.9rem;
-            font-weight: 600;
-            display: block;
+            padding: 1rem 0;
+        }
+
+        /* Footer UTP */
+        .footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+            padding-top: 1rem;
+        }
+
+        .btn-volver {
+            font-size: 0.82rem;
+            color: #888;
+            text-decoration: underline;
+            text-align: center;
         }
 
         /* ── Footer ── */
@@ -222,7 +264,6 @@
             justify-content: center;
             flex-shrink: 0;
         }
-
     </style>
 </head>
 <body>
@@ -244,90 +285,71 @@
     </div>
 
     <!-- Título sección -->
-    <p class="seccion-titulo">Acciones</p>
+    <p class="seccion-titulo">Nuevo Producto</p>
 
-    <div class="buttoms">
+    <!-- Formulario -->
+    <form th:action="@{/gestion-interna/producto/guardar}"
+          th:object="${producto}"
+          method="post"
+          enctype="multipart/form-data">
 
-        <a th:href="@{/gestion-interna/producto}" class="btn-producto">
-            <span>Producto</span>
+        <div class="form-card">
 
-            <span class="btn-icon">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                <path d="M7 11H15M11 7V15M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z"
-                      stroke="black"
-                      stroke-opacity="0.6"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"/>
-            </svg>
-        </span>
-        </a>
+            <!-- Nombre -->
+            <div class="campo-nombre">
+                <input type="text" th:field="*{nombre}"
+                       placeholder="Ingrese nombre del producto"/>
+            </div>
 
-        <a th:href="@{/gestion-interna/publicarMenu}" class="btn-menu">
-            <span>Publicar Menú</span>
+            <!-- Categoría e Imagen -->
+            <div class="campos-row">
+                <div class="campo-categoria">
+                    <label>Categoría</label>
+                    <select th:field="*{categoria}">
+                        <option value="">Opciones</option>
+                        <option th:each="cat : ${categorias}"
+                                th:value="${cat}"
+                                th:text="${cat}">
+                        </option>
+                    </select>
+                </div>
 
-            <span class="btn-icon">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                <path d="M7 11H15M11 7V15M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z"
-                      stroke="black"
-                      stroke-opacity="0.6"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"/>
-            </svg>
-        </span>
-        </a>
+                <div class="campo-imagen">
+                    <label>Adjunta imagen</label>
+                    <button type="button" class="btn-imagen" onclick="document.getElementById('fileInput').click()">
+                        + Subir archivo
+                    </button>
+                    <input type="file" id="fileInput" name="file"
+                           accept="image/*"
+                           onchange="document.getElementById('nombreArchivo').textContent = this.files[0]?.name || ''"/>
+                    <span class="nombre-archivo" id="nombreArchivo"></span>
+                </div>
+            </div>
+
+            <!-- Error de validación -->
+            <div class="error-msg" th:if="${#fields.hasErrors('nombre') or #fields.hasErrors('categoria') or #fields.hasErrors('imagen')}">
+                <span th:each="err : ${#fields.errors('*')}" th:text="${err}"></span>
+            </div>
+
+            <!-- Botón agregar -->
+            <button type="submit" class="btn-agregar">Agregar</button>
+        </div>
+    </form>
+
+    <!-- Lista de productos -->
+    <p class="seccion-titulo" style="border-bottom-color: #111;">Productos</p>
+
+    <div class="seccion-productos">
+        <div th:if="${#lists.isEmpty(productos)}" class="sin-productos">
+            No hay productos registrados aún.
+        </div>
+        <div th:each="p : ${productos}" class="producto-item">
+            <span class="producto-nombre" th:text="${p.nombre}">Nombre</span>
+            <span class="producto-categoria" th:text="${p.categoria}">Categoría</span>
+        </div>
     </div>
 
-    <p class="seccion-titulo">Reportes</p>
-
-    <a th:href="@{/gestion-interna/reportes/excel}" class="btn-generar-reporte">
-        📊 Generar Reporte Excel
-    </a>
-
-    <!-- Reporte: Mejor calificado -->
-    <div class="reporte-card">
-        <div class="reporte-header">
-            <p class="reporte-titulo" id="tituloCalificacion">Mejor calificado hoy</p>
-            <select id="selectorCalificacion" class="selector-reporte" onchange="cambiarVistaCalificacion()">
-                <option value="hoy">Hoy</option>
-                <option value="semana">Esta semana</option>
-            </select>
-        </div>
-
-        <div th:if="${#maps.isEmpty(mejoresCalificados)}" class="sin-datos" id="sinDatosHoy">
-            Aún no hay reseñas hoy.
-        </div>
-        <canvas id="chartCalificaciones" th:unless="${#maps.isEmpty(mejoresCalificados)}"></canvas>
-
-        <div th:if="${#maps.isEmpty(mejoresCalificadosSemana)}" class="sin-datos" id="sinDatosSemana" style="display:none;">
-            Aún no hay reseñas esta semana.
-        </div>
-        <ul id="listaSemana" class="lista-semana" style="display:none;">
-            <li th:each="entry : ${mejoresCalificadosSemana}">
-                <span class="dia-nombre" th:text="${entry.key}"></span>
-                <span class="dia-plato" th:text="${entry.value}"></span>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Reporte: Visitas de la semana -->
-    <div class="reporte-card">
-        <p class="reporte-titulo">Visitas — últimos 7 días</p>
-        <div th:if="${#maps.isEmpty(visitasSemana)}" class="sin-datos">
-            Aún no hay visitas registradas.
-        </div>
-        <canvas id="chartVisitas" th:unless="${#maps.isEmpty(visitasSemana)}"></canvas>
-    </div>
-
-    <!-- Reporte: Dispositivos -->
-    <div class="reporte-card">
-        <p class="reporte-titulo">Visitas por dispositivo</p>
-        <div th:if="${#maps.isEmpty(visitasPorDispositivo)}" class="sin-datos">
-            Aún no hay datos de dispositivos.
-        </div>
-        <canvas id="chartDispositivos" th:unless="${#maps.isEmpty(visitasPorDispositivo)}"></canvas>
-    </div>
+    <a th:href="@{/gestion-interna/dashboard}" class="btn-volver">← Volver al dashboard</a>
 
     <!-- Footer -->
     <div class="footer">
@@ -363,97 +385,25 @@
             </a>
         </div>
     </div>
-
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    const calificaciones = /*[[${mejoresCalificados}]]*/ {};
-    const visitas = /*[[${visitasSemana}]]*/ {};
-    const dispositivos = /*[[${visitasPorDispositivo}]]*/ {};
-    /*]]>*/
+<!-- Popup guardado -->
+<div class="popup" id="popup"
+     th:if="${guardado}"
+     th:data-visible="true">
+    ✓ Producto agregado
+</div>
 
-    if (Object.keys(calificaciones).length > 0) {
-        new Chart(document.getElementById('chartCalificaciones'), {
-            type: 'bar',
-            data: {
-                labels: Object.keys(calificaciones),
-                datasets: [{
-                    label: 'Calificación promedio',
-                    data: Object.values(calificaciones),
-                    backgroundColor: '#8bc34a',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                scales: { y: { beginAtZero: true, max: 5 } },
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
+<div class="popup" id="popup-hidden"
+     th:unless="${guardado}">
+</div>
 
-    if (Object.keys(visitas).length > 0) {
-        new Chart(document.getElementById('chartVisitas'), {
-            type: 'line',
-            data: {
-                labels: Object.keys(visitas),
-                datasets: [{
-                    label: 'Visitas',
-                    data: Object.values(visitas),
-                    borderColor: '#ff8500',
-                    backgroundColor: 'rgba(255,133,0,0.15)',
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                scales: { y: { beginAtZero: true } },
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
-
-    if (Object.keys(dispositivos).length > 0) {
-        new Chart(document.getElementById('chartDispositivos'), {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(dispositivos),
-                datasets: [{
-                    data: Object.values(dispositivos),
-                    backgroundColor: ['#8bc34a', '#ff8500', '#4a90d9', '#aaaaaa']
-                }]
-            },
-            options: {
-                plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
-            }
-        });
-    }
-
-    // Toggle entre "hoy" y "semana"
-    function cambiarVistaCalificacion() {
-        const valor = document.getElementById('selectorCalificacion').value;
-        const titulo = document.getElementById('tituloCalificacion');
-        const chartHoy = document.getElementById('chartCalificaciones');
-        const sinDatosHoy = document.getElementById('sinDatosHoy');
-        const listaSemana = document.getElementById('listaSemana');
-        const sinDatosSemana = document.getElementById('sinDatosSemana');
-
-        if (valor === 'hoy') {
-            titulo.textContent = 'Mejor calificado hoy';
-            if (chartHoy) chartHoy.style.display = 'block';
-            if (sinDatosHoy) sinDatosHoy.style.display = 'block';
-            listaSemana.style.display = 'none';
-            if (sinDatosSemana) sinDatosSemana.style.display = 'none';
-        } else {
-            titulo.textContent = 'Mejores calificados de esta semana';
-            if (chartHoy) chartHoy.style.display = 'none';
-            if (sinDatosHoy) sinDatosHoy.style.display = 'none';
-            listaSemana.style.display = 'flex';
-            if (sinDatosSemana) sinDatosSemana.style.display = 'block';
-        }
+<script>
+    const popup = document.getElementById('popup');
+    if (popup && popup.getAttribute('data-visible')) {
+        popup.classList.add('visible');
+        setTimeout(() => popup.classList.remove('visible'), 2000);
     }
 </script>
-
 </body>
 </html>

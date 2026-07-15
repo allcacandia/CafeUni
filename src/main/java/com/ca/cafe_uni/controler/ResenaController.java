@@ -14,6 +14,7 @@ public class ResenaController {
     private final ResenaService resenaService;
     private final DetalleMenuRepository detalleMenuRepository;
 
+
     public ResenaController(ResenaService resenaService, DetalleMenuRepository detalleMenuRepository) {
         this.resenaService = resenaService;
         this.detalleMenuRepository = detalleMenuRepository;

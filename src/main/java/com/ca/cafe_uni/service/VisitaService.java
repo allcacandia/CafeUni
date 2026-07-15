@@ -3,6 +3,8 @@ package com.ca.cafe_uni.service;
 import com.ca.cafe_uni.model.Visita;
 import com.ca.cafe_uni.repository.VisitaRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 public class VisitaService {
 
     private final VisitaRepository visitaRepository;
+    private static final Logger logger = LoggerFactory.getLogger(VisitaService.class);
+
 
     public VisitaService(VisitaRepository visitaRepository) {
         this.visitaRepository = visitaRepository;
@@ -18,7 +22,11 @@ public class VisitaService {
 
     public void registrar(HttpServletRequest request) {
         String ip = obtenerIp(request);
-        String dispositivo = resolverDispositivo(request.getHeader("User-Agent"));
+        String userAgentCrudo = request.getHeader("User-Agent");
+        String dispositivo = resolverDispositivo(userAgentCrudo);
+
+        logger.info("User-Agent crudo: {}", userAgentCrudo);
+        logger.info("Nueva visita registrada - IP: {}, Dispositivo: {}", ip, dispositivo);
 
         Visita visita = new Visita();
         visita.setIpUsuario(ip);

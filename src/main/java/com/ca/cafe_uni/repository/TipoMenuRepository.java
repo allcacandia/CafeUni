@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TipoMenuRepository extends JpaRepository<TipoMenu, Integer> {
-
+    TipoMenu findByNombre(String nombre);
 }
