@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ public class MenuService {
     private final TipoMenuRepository tipoMenuRepository;
     private final ProductoRepository productoRepository;
     private static final Logger logger = LoggerFactory.getLogger(MenuService.class);
+    private static final ZoneId ZONA_PERU = ZoneId.of("America/Lima");
 
     public MenuService(MenuDiarioRepository menuDiarioRepository,
                        DetalleMenuRepository detalleMenuRepository,
@@ -37,7 +39,7 @@ public class MenuService {
     }
 
     public Optional<MenuDiario> obtenerMenuHoy() {
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZONA_PERU);
         LocalDateTime inicio = hoy.atStartOfDay();
         LocalDateTime fin = hoy.atTime(23, 59, 59);
         Optional<MenuDiario> resultado = menuDiarioRepository.findFirstByFechaBetween(inicio, fin);
@@ -51,7 +53,7 @@ public class MenuService {
     }
 
     public boolean existeMenuHoy() {
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZONA_PERU);
         LocalDateTime inicio = hoy.atStartOfDay();
         LocalDateTime fin = hoy.atTime(23, 59, 59);
         boolean existe = menuDiarioRepository.findFirstByFechaBetween(inicio, fin).isPresent();
@@ -70,10 +72,10 @@ public class MenuService {
                              List<Integer> entradaIds,
                              List<Integer> postreIds) {
 
-        logger.info("Publicando nuevo menú diario para la fecha: {}", LocalDateTime.now());
+        logger.info("Publicando nuevo menú diario para la fecha: {}", LocalDateTime.now(ZONA_PERU));
 
         MenuDiario menu = new MenuDiario();
-        menu.setFecha(LocalDateTime.now());
+        menu.setFecha(LocalDateTime.now(ZONA_PERU));
         menuDiarioRepository.save(menu);
         logger.info("MenuDiario creado con id={}", menu.getIdMenu());
 
