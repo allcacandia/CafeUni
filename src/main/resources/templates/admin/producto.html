@@ -206,6 +206,27 @@
             width: 100%;
         }
 
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: girar 0.6s linear infinite;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes girar {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-agregar:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         /* Lista productos */
         .seccion-productos {
             display: flex;
@@ -240,6 +261,121 @@
             font-size: 0.9rem;
             padding: 1rem 0;
         }
+
+        .producto-item-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .producto-acciones {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-editar-producto, .btn-eliminar-producto {
+            background: none;
+            border: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .btn-editar-producto { color: #4a90d9; }
+        .btn-eliminar-producto { color: #cc0000; }
+
+        .editar-producto-form {
+            display: none;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 1rem;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .editar-producto-form.abierto { display: flex; }
+
+        .input-editar, .select-editar {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            color: #111;
+        }
+
+        .label-editar-imagen {
+            font-size: 0.78rem;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .btn-guardar-edicion {
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+        }
+
+        /* Modal eliminar producto */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.abierto { display: flex; }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 85%;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-box p {
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .modal-botones {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .modal-botones button {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-cancelar { background: #eee; color: #333; }
+        .btn-confirmar-eliminar { background: #e74c3c; color: #fff; }
 
         /* Footer UTP */
         .footer {
@@ -291,7 +427,8 @@
     <form th:action="@{/gestion-interna/producto/guardar}"
           th:object="${producto}"
           method="post"
-          enctype="multipart/form-data">
+          enctype="multipart/form-data"
+          id="formProducto">
 
         <div class="form-card">
 
@@ -332,7 +469,10 @@
             </div>
 
             <!-- Botón agregar -->
-            <button type="submit" class="btn-agregar">Agregar</button>
+            <button type="submit" class="btn-agregar" id="btnAgregar">
+                <span id="textoBoton">Agregar</span>
+                <span id="spinner" class="spinner" style="display:none;"></span>
+            </button>
         </div>
     </form>
 
@@ -343,9 +483,45 @@
         <div th:if="${#lists.isEmpty(productos)}" class="sin-productos">
             No hay productos registrados aún.
         </div>
-        <div th:each="p : ${productos}" class="producto-item">
-            <span class="producto-nombre" th:text="${p.nombre}">Nombre</span>
-            <span class="producto-categoria" th:text="${p.categoria}">Categoría</span>
+        <div th:each="p : ${productos}" class="producto-item-wrapper">
+            <div class="producto-item">
+                <div>
+                    <span class="producto-nombre" th:text="${p.nombre}">Nombre</span>
+                    <span class="producto-categoria" th:text="${p.categoria}">Categoría</span>
+                </div>
+                <div class="producto-acciones">
+                    <button type="button" class="btn-editar-producto btn-editar-click"
+                            th:data-id="${p.idProducto}">Editar</button>
+                    <button type="button" class="btn-eliminar-producto btn-eliminar-click"
+                            th:data-id="${p.idProducto}"
+                            th:data-nombre="${p.nombre}">Eliminar</button>
+                </div>
+            </div>
+
+            <!-- Formulario de edición inline -->
+            <div class="editar-producto-form" th:id="|editar-producto-${p.idProducto}|">
+                <form th:action="@{/gestion-interna/producto/actualizar/{id}(id=${p.idProducto})}"
+                      method="post" enctype="multipart/form-data">
+
+                    <input type="text" name="nombre" th:value="${p.nombre}"
+                           class="input-editar" placeholder="Nombre del producto"/>
+
+                    <select name="categoria" class="select-editar">
+                        <option th:each="cat : ${categorias}"
+                                th:value="${cat}"
+                                th:text="${cat}"
+                                th:selected="${cat == p.categoria}">
+                        </option>
+                    </select>
+
+                    <label class="label-editar-imagen">
+                        Nueva imagen (opcional)
+                        <input type="file" name="file" accept="image/*"/>
+                    </label>
+
+                    <button type="submit" class="btn-guardar-edicion">Guardar cambios</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -394,16 +570,67 @@
     ✓ Producto agregado
 </div>
 
-<div class="popup" id="popup-hidden"
-     th:unless="${guardado}">
+<div class="modal-overlay" id="modalEliminarProducto">
+    <div class="modal-box">
+        <p><strong>¿Eliminar <span id="nombreProductoEliminar"></span>?</strong><br/>
+            Esto eliminará también sus reseñas y detalles de menú asociados. ¿Está seguro?</p>
+        <div class="modal-botones">
+            <button type="button" class="btn-cancelar" onclick="cerrarModalEliminarProducto()">Cancelar</button>
+            <form id="formEliminarProducto" method="post" style="flex:1;">
+                <button type="submit" class="btn-confirmar-eliminar" style="width:100%;">Sí</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
+
     const popup = document.getElementById('popup');
     if (popup && popup.getAttribute('data-visible')) {
         popup.classList.add('visible');
         setTimeout(() => popup.classList.remove('visible'), 2000);
     }
+
+    document.getElementById('formProducto').addEventListener('submit', function() {
+        const btn = document.getElementById('btnAgregar');
+        const texto = document.getElementById('textoBoton');
+        const spinner = document.getElementById('spinner');
+        btn.disabled = true;
+        texto.textContent = 'Guardando...';
+        spinner.style.display = 'inline-block';
+    });
+
+    function toggleEditarProducto(id) {
+        const el = document.getElementById('editar-producto-' + id);
+        document.querySelectorAll('.editar-producto-form').forEach(e => {
+            if (e.id !== 'editar-producto-' + id) e.classList.remove('abierto');
+        });
+        el.classList.toggle('abierto');
+    }
+
+    function abrirModalEliminarProducto(id, nombre) {
+        document.getElementById('nombreProductoEliminar').textContent = nombre;
+        document.getElementById('formEliminarProducto').action = '/gestion-interna/producto/eliminar/' + id;
+        document.getElementById('modalEliminarProducto').classList.add('abierto');
+    }
+
+    function cerrarModalEliminarProducto() {
+        document.getElementById('modalEliminarProducto').classList.remove('abierto');
+    }
+
+    // Conectar botones vía data-* en vez de th:onclick
+    document.querySelectorAll('.btn-editar-click').forEach(btn => {
+        btn.addEventListener('click', function() {
+            toggleEditarProducto(this.getAttribute('data-id'));
+        });
+    });
+
+    document.querySelectorAll('.btn-eliminar-click').forEach(btn => {
+        btn.addEventListener('click', function() {
+            abrirModalEliminarProducto(this.getAttribute('data-id'), this.getAttribute('data-nombre'));
+        });
+    });
+
 </script>
 </body>
 </html>

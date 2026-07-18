@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Publicar Menú – Admin</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background: #f0f0f0;
@@ -38,16 +34,8 @@
             align-items: center;
         }
 
-        .header-texto p {
-            font-size: 0.75rem;
-            color: #888;
-        }
-
-        .header-texto h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #111;
-        }
+        .header-texto p { font-size: 0.75rem; color: #888; }
+        .header-texto h2 { font-size: 1.3rem; font-weight: 700; color: #111; }
 
         .avatar {
             width: 42px;
@@ -67,18 +55,130 @@
             border-bottom: 2.5px solid #f5a623;
         }
 
-        /* Alerta menú ya publicado */
-        .alerta {
-            background: #fff3e0;
-            border: 1px solid #f5a623;
-            border-radius: 12px;
-            padding: 0.9rem 1rem;
-            font-size: 0.85rem;
-            color: #b36b00;
-            text-align: center;
+        /* ── VISTA: MENÚ YA PUBLICADO ── */
+        .detalle-seccion {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
-        /* Card de cada tipo de menú */
+        .detalle-seccion-titulo {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .detalle-item {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .detalle-nombre { color: #111; }
+
+        .btn-editar {
+            background: none;
+            border: none;
+            color: #4a90d9;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Selector de edición inline */
+        .editar-selector {
+            display: none;
+            margin-top: 0.5rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .editar-selector.abierto { display: block; }
+
+        .editar-opcion {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .editar-opcion:hover { background: #f5f5f5; }
+        .editar-opcion:last-child { border-bottom: none; }
+
+        /* Botón eliminar menú (rojo) */
+        .btn-eliminar-menu {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 2.5rem;
+        }
+
+        /* Modal de confirmación */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.abierto { display: flex; }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 85%;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-box p {
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .modal-botones {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .modal-botones button {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-cancelar { background: #eee; color: #333; }
+        .btn-confirmar { background: #e74c3c; color: #fff; }
+
+        /* ── VISTA: FORMULARIO DE PUBLICACIÓN ── */
         .menu-seccion {
             display: flex;
             flex-direction: column;
@@ -93,7 +193,6 @@
             letter-spacing: 0.05em;
         }
 
-        /* Lista de productos seleccionados */
         .productos-seleccionados {
             display: flex;
             flex-direction: column;
@@ -120,10 +219,7 @@
             padding: 0 0.25rem;
         }
 
-        /* Dropdown agregar */
-        .dropdown-wrapper {
-            position: relative;
-        }
+        .dropdown-wrapper { position: relative; }
 
         .btn-agregar {
             width: 100%;
@@ -141,9 +237,7 @@
             transition: background 0.2s;
         }
 
-        .btn-agregar:hover {
-            background: #e8e8e8;
-        }
+        .btn-agregar:hover { background: #e8e8e8; }
 
         .dropdown-lista {
             display: none;
@@ -153,14 +247,12 @@
             right: 0;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
             z-index: 10;
             overflow: hidden;
         }
 
-        .dropdown-lista.abierto {
-            display: block;
-        }
+        .dropdown-lista.abierto { display: block; }
 
         .dropdown-item {
             padding: 0.75rem 1rem;
@@ -170,16 +262,28 @@
             transition: background 0.15s;
         }
 
-        .dropdown-item:hover {
-            background: #f5f5f5;
+        .dropdown-item:hover { background: #f5f5f5; }
+        .dropdown-item.seleccionado { color: #aaa; cursor: default; }
+
+        .btn-nuevo-plato {
+            width: 100%;
+            background: none;
+            border: 1.5px dashed #ccc;
+            border-radius: 12px;
+            padding: 0.65rem 1rem;
+            font-size: 0.85rem;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            transition: border-color 0.2s;
         }
 
-        .dropdown-item.seleccionado {
-            color: #aaa;
-            cursor: default;
-        }
+        .btn-nuevo-plato:hover { border-color: #888; color: #555; }
 
-        /* Botón publicar */
         .btn-publicar {
             background: linear-gradient(135deg, #f5a623, #e8890a);
             color: #fff;
@@ -191,12 +295,7 @@
             font-family: 'Montserrat', sans-serif;
             cursor: pointer;
             width: 100%;
-            margin-top: 0.5rem;
-        }
-
-        .btn-publicar:disabled {
-            background: #ccc;
-            cursor: not-allowed;
+            margin-top: 50px;
         }
 
         .btn-volver {
@@ -213,7 +312,6 @@
             padding-top: 1rem;
         }
 
-        /* Popup */
         .popup {
             position: fixed;
             bottom: 2rem;
@@ -230,10 +328,7 @@
             z-index: 999;
             white-space: nowrap;
         }
-
-        .popup.visible {
-            opacity: 1;
-        }
+        .popup.visible { opacity: 1; }
     </style>
 </head>
 <body>
@@ -255,118 +350,193 @@
 
     <p class="seccion-titulo">Menu del dia</p>
 
-    <!-- Alerta si ya existe menú hoy -->
-    <div th:if="${menuExiste}" class="alerta">
-        Ya existe un menú publicado para hoy. No se puede publicar otro.
+    <!-- ══════════ VISTA: YA EXISTE MENÚ HOY ══════════ -->
+    <div th:if="${menuExiste}">
+
+        <!-- Menú Ejecutivo -->
+        <div class="detalle-seccion">
+            <p class="detalle-seccion-titulo">Menú Ejecutivo</p>
+            <div th:each="d : ${detallesHoy}" th:if="${d.tipoMenu != null and d.tipoMenu.nombre == 'ejecutivo'}">
+                <div class="detalle-item">
+                    <span class="detalle-nombre" th:text="${d.producto.nombre}"></span>
+                    <button type="button" class="btn-editar"
+                            th:onclick="'toggleEditar(' + ${d.idDetalle} + ')'">Editar</button>
+                </div>
+                <div class="editar-selector" th:id="'editar-' + ${d.idDetalle}">
+                    <form th:action="@{/gestion-interna/publicarMenu/editarDetalle}" method="post">
+                        <input type="hidden" name="idDetalle" th:value="${d.idDetalle}"/>
+                        <div class="editar-opcion" th:each="p : ${platos}">
+                            <button type="submit" name="idProducto" th:value="${p.idProducto}"
+                                    style="all:unset; cursor:pointer; width:100%; display:block;"
+                                    th:text="${p.nombre}"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Estudiantil -->
+        <div class="detalle-seccion" style="margin-top: 1rem;">
+            <p class="detalle-seccion-titulo">Menú Estudiantil</p>
+            <div th:each="d : ${detallesHoy}" th:if="${d.tipoMenu != null and d.tipoMenu.nombre == 'estudiantil'}">
+                <div class="detalle-item">
+                    <span class="detalle-nombre" th:text="${d.producto.nombre}"></span>
+                    <button type="button" class="btn-editar"
+                            th:onclick="'toggleEditar(' + ${d.idDetalle} + ')'">Editar</button>
+                </div>
+                <div class="editar-selector" th:id="'editar-' + ${d.idDetalle}">
+                    <form th:action="@{/gestion-interna/publicarMenu/editarDetalle}" method="post">
+                        <input type="hidden" name="idDetalle" th:value="${d.idDetalle}"/>
+                        <div class="editar-opcion" th:each="p : ${platos}">
+                            <button type="submit" name="idProducto" th:value="${p.idProducto}"
+                                    style="all:unset; cursor:pointer; width:100%; display:block;"
+                                    th:text="${p.nombre}"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Entradas -->
+        <div class="detalle-seccion" style="margin-top: 1rem;">
+            <p class="detalle-seccion-titulo">Entrada</p>
+            <div th:each="d : ${detallesHoy}" th:if="${d.producto.categoria.name() == 'entrada'}">
+                <div class="detalle-item">
+                    <span class="detalle-nombre" th:text="${d.producto.nombre}"></span>
+                    <button type="button" class="btn-editar"
+                            th:onclick="'toggleEditar(' + ${d.idDetalle} + ')'">Editar</button>
+                </div>
+                <div class="editar-selector" th:id="'editar-' + ${d.idDetalle}">
+                    <form th:action="@{/gestion-interna/publicarMenu/editarDetalle}" method="post">
+                        <input type="hidden" name="idDetalle" th:value="${d.idDetalle}"/>
+                        <div class="editar-opcion" th:each="p : ${entradas}">
+                            <button type="submit" name="idProducto" th:value="${p.idProducto}"
+                                    style="all:unset; cursor:pointer; width:100%; display:block;"
+                                    th:text="${p.nombre}"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Postres -->
+        <div class="detalle-seccion" style="margin-top: 1rem;">
+            <p class="detalle-seccion-titulo">Postre</p>
+            <div th:each="d : ${detallesHoy}" th:if="${d.producto.categoria.name() == 'postre'}">
+                <div class="detalle-item">
+                    <span class="detalle-nombre" th:text="${d.producto.nombre}"></span>
+                    <button type="button" class="btn-editar"
+                            th:onclick="'toggleEditar(' + ${d.idDetalle} + ')'">Editar</button>
+                </div>
+                <div class="editar-selector" th:id="'editar-' + ${d.idDetalle}">
+                    <form th:action="@{/gestion-interna/publicarMenu/editarDetalle}" method="post">
+                        <input type="hidden" name="idDetalle" th:value="${d.idDetalle}"/>
+                        <div class="editar-opcion" th:each="p : ${postres}">
+                            <button type="submit" name="idProducto" th:value="${p.idProducto}"
+                                    style="all:unset; cursor:pointer; width:100%; display:block;"
+                                    th:text="${p.nombre}"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón eliminar menú -->
+        <button type="button" class="btn-eliminar-menu" onclick="abrirModalEliminar()">
+            Eliminar Menú
+        </button>
     </div>
 
-    <form th:action="@{/gestion-interna/publicarMenu/publicar}" method="post" id="formMenu">
+    <!-- ══════════ VISTA: FORMULARIO DE PUBLICACIÓN ══════════ -->
+    <form th:unless="${menuExiste}" th:action="@{/gestion-interna/publicarMenu/publicar}" method="post" id="formMenu">
 
-        <!-- ── MENÚ EJECUTIVO ── -->
         <div class="menu-seccion">
             <p class="menu-seccion-titulo">Menú Ejecutivo</p>
             <div class="productos-seleccionados" id="lista-ejecutivo"></div>
             <div class="dropdown-wrapper">
-                <button type="button" class="btn-agregar"
-                        onclick="toggleDropdown('dropdown-ejecutivo')">
+                <button type="button" class="btn-agregar"  id="btn-agregar-ejecutivo" onclick="toggleDropdown('dropdown-ejecutivo')">
                     Agregar <span>›</span>
                 </button>
                 <div class="dropdown-lista" id="dropdown-ejecutivo">
-                    <div th:each="p : ${platos}"
-                         class="dropdown-item"
-                         th:data-id="${p.idProducto}"
-                         th:data-nombre="${p.nombre}"
+                    <div th:each="p : ${platos}" class="dropdown-item"
+                         th:data-id="${p.idProducto}" th:data-nombre="${p.nombre}"
                          onclick="seleccionarProducto(this, 'ejecutivo')">
                         <span th:text="${p.nombre}"></span>
                     </div>
                 </div>
             </div>
-
+            <button type="button" class="btn-nuevo-plato" onclick="agregarOtro('ejecutivo')">+ Nuevo plato</button>
         </div>
 
         <div style="height: 1px; background: #f0f0f0; margin: 0.5rem 0;"></div>
 
-        <!-- ── MENÚ ESTUDIANTIL ── -->
         <div class="menu-seccion">
             <p class="menu-seccion-titulo">Menú Estudiantil</p>
             <div class="productos-seleccionados" id="lista-estudiantil"></div>
             <div class="dropdown-wrapper">
-                <button type="button" class="btn-agregar"
-                        onclick="toggleDropdown('dropdown-estudiantil')">
+                <button type="button" class="btn-agregar" id="btn-agregar-estudiantil" onclick="toggleDropdown('dropdown-estudiantil')">
                     Agregar <span>›</span>
                 </button>
                 <div class="dropdown-lista" id="dropdown-estudiantil">
-                    <div th:each="p : ${platos}"
-                         class="dropdown-item"
-                         th:data-id="${p.idProducto}"
-                         th:data-nombre="${p.nombre}"
+                    <div th:each="p : ${platos}" class="dropdown-item"
+                         th:data-id="${p.idProducto}" th:data-nombre="${p.nombre}"
                          onclick="seleccionarProducto(this, 'estudiantil')">
                         <span th:text="${p.nombre}"></span>
                     </div>
                 </div>
             </div>
-
+            <button type="button" class="btn-nuevo-plato" onclick="agregarOtro('estudiantil')">+ Nuevo plato</button>
         </div>
 
         <div style="height: 1px; background: #f0f0f0; margin: 0.5rem 0;"></div>
 
-        <!-- ── ENTRADAS ── -->
         <div class="menu-seccion">
             <p class="menu-seccion-titulo">Entrada</p>
             <div class="productos-seleccionados" id="lista-entrada"></div>
             <div class="dropdown-wrapper">
-                <button type="button" class="btn-agregar"
-                        onclick="toggleDropdown('dropdown-entrada')">
+                <button type="button" class="btn-agregar" id="btn-agregar-entrada" onclick="toggleDropdown('dropdown-entrada')">
                     Agregar <span>›</span>
                 </button>
                 <div class="dropdown-lista" id="dropdown-entrada">
-                    <div th:each="p : ${entradas}"
-                         class="dropdown-item"
-                         th:data-id="${p.idProducto}"
-                         th:data-nombre="${p.nombre}"
+                    <div th:each="p : ${entradas}" class="dropdown-item"
+                         th:data-id="${p.idProducto}" th:data-nombre="${p.nombre}"
                          onclick="seleccionarProducto(this, 'entrada')">
                         <span th:text="${p.nombre}"></span>
                     </div>
                 </div>
             </div>
-
+            <button type="button" class="btn-nuevo-plato" onclick="agregarOtro('entrada')">+ Nuevo plato</button>
         </div>
 
         <div style="height: 1px; background: #f0f0f0; margin: 0.5rem 0;"></div>
 
-        <!-- ── POSTRES ── -->
         <div class="menu-seccion">
             <p class="menu-seccion-titulo">Postre</p>
             <div class="productos-seleccionados" id="lista-postre"></div>
             <div class="dropdown-wrapper">
-                <button type="button" class="btn-agregar"
-                        onclick="toggleDropdown('dropdown-postre')">
+                <button type="button" class="btn-agregar" id="btn-agregar-postre" onclick="toggleDropdown('dropdown-postre')">
                     Agregar <span>›</span>
                 </button>
                 <div class="dropdown-lista" id="dropdown-postre">
-                    <div th:each="p : ${postres}"
-                         class="dropdown-item"
-                         th:data-id="${p.idProducto}"
-                         th:data-nombre="${p.nombre}"
+                    <div th:each="p : ${postres}" class="dropdown-item"
+                         th:data-id="${p.idProducto}" th:data-nombre="${p.nombre}"
                          onclick="seleccionarProducto(this, 'postre')">
                         <span th:text="${p.nombre}"></span>
                     </div>
                 </div>
             </div>
-
+            <button type="button" class="btn-nuevo-plato" onclick="agregarOtro('postre')">+ Nuevo plato</button>
         </div>
 
-        <!-- Botón publicar -->
-        <button type="submit" class="btn-publicar"
-                th:disabled="${menuExiste}">
-            Publicar Menú
+        <button type="submit" class="btn-publicar" id="btnPublicar">
+            <span id="textoBotonMenu">Publicar Menú</span>
+            <span id="spinnerMenu" class="spinner" style="display:none;"></span>
         </button>
 
     </form>
 
     <a th:href="@{/gestion-interna/dashboard}" class="btn-volver">← Volver al dashboard</a>
 
-    <!-- Footer -->
     <div class="footer">
         <div class="utp-slot">
             <a href="/" title="Inicio" rel="home" class="navbar-brand" data-track-category="navegacion_logo" data-track-action="abrir_home" data-track-label="Logo UTP Home" data-track-value="Logo UTP" data-track-section="megamenu">
@@ -402,7 +572,21 @@
     </div>
 </div>
 
-<!-- Popup publicado -->
+<!-- Modal de confirmación para eliminar -->
+<div class="modal-overlay" id="modalEliminar">
+    <div class="modal-box">
+        <p><strong>¿Eliminar el menú del día?</strong><br/>
+            Esto podría afectar otros campos como las reseñas. ¿Está seguro?</p>
+        <div class="modal-botones">
+            <button type="button" class="btn-cancelar" onclick="cerrarModalEliminar()">Cancelar</button>
+            <form th:action="@{/gestion-interna/publicarMenu/eliminar}" method="post" style="flex:1;">
+                <button type="submit" class="btn-confirmar" style="width:100%;">Sí</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Popup -->
 <div class="popup" id="popup"
      th:if="${publicado}"
      th:data-visible="true">
@@ -415,6 +599,23 @@
     if (popup && popup.getAttribute('data-visible')) {
         popup.classList.add('visible');
         setTimeout(() => popup.classList.remove('visible'), 2500);
+    }
+
+    // Modal eliminar
+    function abrirModalEliminar() {
+        document.getElementById('modalEliminar').classList.add('abierto');
+    }
+    function cerrarModalEliminar() {
+        document.getElementById('modalEliminar').classList.remove('abierto');
+    }
+
+    // Toggle editar detalle
+    function toggleEditar(idDetalle) {
+        const el = document.getElementById('editar-' + idDetalle);
+        document.querySelectorAll('.editar-selector').forEach(e => {
+            if (e.id !== 'editar-' + idDetalle) e.classList.remove('abierto');
+        });
+        el.classList.toggle('abierto');
     }
 
     // Cerrar dropdowns al hacer click fuera
@@ -431,22 +632,20 @@
         if (!estaAbierto) dropdown.classList.add('abierto');
     }
 
-    // Seleccionar producto del dropdown
     function seleccionarProducto(item, tipo) {
         if (item.classList.contains('seleccionado')) return;
-
         const id = item.getAttribute('data-id');
         const nombre = item.getAttribute('data-nombre');
-
         agregarProductoAlista(id, nombre, tipo);
         item.classList.add('seleccionado');
-
         document.getElementById('dropdown-' + tipo).classList.remove('abierto');
+
+        // Oculta el botón "Agregar" principal después de seleccionar
+        document.getElementById('btn-agregar-' + tipo).style.display = 'none';
     }
 
     function agregarProductoAlista(id, nombre, tipo) {
         const lista = document.getElementById('lista-' + tipo);
-
         const div = document.createElement('div');
         div.className = 'producto-seleccionado';
         div.innerHTML = `
@@ -458,14 +657,30 @@
     }
 
     function quitarProducto(btn, id, tipo) {
-        // Reactivar en el dropdown
         const items = document.querySelectorAll(`#dropdown-${tipo} .dropdown-item`);
         items.forEach(item => {
-            if (item.getAttribute('data-id') === id) {
-                item.classList.remove('seleccionado');
-            }
+            if (item.getAttribute('data-id') === id) item.classList.remove('seleccionado');
         });
         btn.closest('.producto-seleccionado').remove();
+    }
+
+    function agregarOtro(tipo) {
+        // Muestra de nuevo el botón "Agregar" y abre el dropdown
+        const btnAgregar = document.getElementById('btn-agregar-' + tipo);
+        btnAgregar.style.display = 'flex';
+        toggleDropdown('dropdown-' + tipo);
+    }
+
+    const formMenu = document.getElementById('formMenu');
+    if (formMenu) {
+        formMenu.addEventListener('submit', function() {
+            const btn = document.getElementById('btnPublicar');
+            const texto = document.getElementById('textoBotonMenu');
+            const spinner = document.getElementById('spinnerMenu');
+            btn.disabled = true;
+            texto.textContent = 'Publicando...';
+            spinner.style.display = 'inline-block';
+        });
     }
 </script>
 

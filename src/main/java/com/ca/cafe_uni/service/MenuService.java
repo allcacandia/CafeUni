@@ -4,10 +4,7 @@ import com.ca.cafe_uni.model.DetalleMenu;
 import com.ca.cafe_uni.model.MenuDiario;
 import com.ca.cafe_uni.model.Producto;
 import com.ca.cafe_uni.model.TipoMenu;
-import com.ca.cafe_uni.repository.DetalleMenuRepository;
-import com.ca.cafe_uni.repository.MenuDiarioRepository;
-import com.ca.cafe_uni.repository.ProductoRepository;
-import com.ca.cafe_uni.repository.TipoMenuRepository;
+import com.ca.cafe_uni.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,17 +22,16 @@ public class MenuService {
     private final DetalleMenuRepository detalleMenuRepository;
     private final TipoMenuRepository tipoMenuRepository;
     private final ProductoRepository productoRepository;
+    private final ResenaRepository resenaRepository;
     private static final Logger logger = LoggerFactory.getLogger(MenuService.class);
     private static final ZoneId ZONA_PERU = ZoneId.of("America/Lima");
 
-    public MenuService(MenuDiarioRepository menuDiarioRepository,
-                       DetalleMenuRepository detalleMenuRepository,
-                       TipoMenuRepository tipoMenuRepository,
-                       ProductoRepository productoRepository) {
+    public MenuService(MenuDiarioRepository menuDiarioRepository, DetalleMenuRepository detalleMenuRepository, TipoMenuRepository tipoMenuRepository, ProductoRepository productoRepository, ResenaRepository resenaRepository) {
         this.menuDiarioRepository = menuDiarioRepository;
         this.detalleMenuRepository = detalleMenuRepository;
         this.tipoMenuRepository = tipoMenuRepository;
         this.productoRepository = productoRepository;
+        this.resenaRepository = resenaRepository;
     }
 
     public Optional<MenuDiario> obtenerMenuHoy() {
@@ -50,6 +46,13 @@ public class MenuService {
             logger.warn("No se encontró menú para el día de hoy: {}", hoy);
         }
         return resultado;
+    }
+
+    public MenuDiario obtenerMenuHoyConDetalles() {
+        LocalDate hoy = LocalDate.now(ZONA_PERU);
+        LocalDateTime inicio = hoy.atStartOfDay();
+        LocalDateTime fin = hoy.atTime(23, 59, 59);
+        return menuDiarioRepository.findFirstByFechaBetween(inicio, fin).orElse(null);
     }
 
     public boolean existeMenuHoy() {
@@ -111,4 +114,29 @@ public class MenuService {
             logger.info("Detalle guardado - producto={}, tipo={}", producto.getNombre(), nombreTipo);
         }
     }
+
+    public void eliminarMenuHoy() {
+        MenuDiario menu = obtenerMenuHoyConDetalles();
+        if (menu == null) return;
+
+        List<DetalleMenu> detalles = detalleMenuRepository.findByMenuDiario_IdMenu(menu.getIdMenu());
+        for (DetalleMenu detalle : detalles) {
+            resenaRepository.deleteAll(resenaRepository.findByDetalleMenu_IdDetalle(detalle.getIdDetalle()));
+        }
+        detalleMenuRepository.deleteAll(detalles);
+        menuDiarioRepository.delete(menu);
+
+        logger.info("Menú del día eliminado por el administrador");
+    }
+
+    public void actualizarDetalle(Integer idDetalle, Integer idProductoNuevo) {
+        DetalleMenu detalle = detalleMenuRepository.findById(idDetalle)
+                .orElseThrow(() -> new IllegalArgumentException("Detalle no encontrado"));
+        Producto producto = productoRepository.findById(idProductoNuevo)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+        detalle.setProducto(producto);
+        detalleMenuRepository.save(detalle);
+        logger.info("Detalle {} actualizado a producto {}", idDetalle, producto.getNombre());
+    }
+
 }

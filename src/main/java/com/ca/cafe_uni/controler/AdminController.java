@@ -1,5 +1,6 @@
 package com.ca.cafe_uni.controler;
 
+import com.ca.cafe_uni.model.MenuDiario;
 import com.ca.cafe_uni.model.Producto;
 import com.ca.cafe_uni.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,10 +64,11 @@ public class AdminController {
     }
 
     @GetMapping("/producto")
-    public String producto(Model model) {
+    public String producto(@RequestParam(required = false) Boolean guardado, Model model) {
         model.addAttribute("producto", new Producto());
         model.addAttribute("productos", productoService.listarTodos());
         model.addAttribute("categorias", Producto.CategoriaProducto.values());
+        model.addAttribute("guardado", guardado);
         return "admin/producto";
     }
 
@@ -113,25 +115,69 @@ public class AdminController {
         return "redirect:/gestion-interna/producto?guardado=true";
     }
 
+    @GetMapping("/producto/editar/{id}")
+    public String editarProductoForm(@PathVariable Integer id, Model model) {
+        model.addAttribute("productoEditar", productoService.obtenerPorId(id));
+        model.addAttribute("productos", productoService.listarTodos());
+        model.addAttribute("categorias", Producto.CategoriaProducto.values());
+        model.addAttribute("producto", new Producto());
+        return "admin/producto";
+    }
+
+    @PostMapping("/producto/actualizar/{id}")
+    public String actualizarProducto(@PathVariable Integer id,
+                                     @ModelAttribute Producto producto,
+                                     @RequestParam(value = "file", required = false) MultipartFile imagen) throws IOException {
+        productoService.actualizar(id, producto, imagen);
+        return "redirect:/gestion-interna/producto?actualizado=true";
+    }
+
+    @PostMapping("/producto/eliminar/{id}")
+    public String eliminarProducto(@PathVariable Integer id) {
+        productoService.eliminar(id);
+        return "redirect:/gestion-interna/producto?eliminado=true";
+    }
+
     @GetMapping("/publicarMenu")
-    public String menu(Model model) {
-        model.addAttribute("menuExiste", menuService.existeMenuHoy());
+    public String menu(@RequestParam(required = false) Boolean publicado, Model model) {
+        MenuDiario menuHoy = menuService.obtenerMenuHoyConDetalles();
+        model.addAttribute("menuExiste", menuHoy != null);
+        model.addAttribute("menuHoy", menuHoy);
+
+        if (menuHoy != null) {
+            model.addAttribute("detallesHoy", menuService.obtenerDetallesDisponibles(menuHoy.getIdMenu()));
+        }
+
         model.addAttribute("platos", productoService.listarPorCategoria("plato"));
         model.addAttribute("entradas", productoService.listarPorCategoria("entrada"));
         model.addAttribute("postres", productoService.listarPorCategoria("postre"));
+        model.addAttribute("publicado", publicado);
         return "admin/publicarMenu";
     }
 
     @PostMapping("/publicarMenu/publicar")
     public String publicarMenu(@RequestParam List<Integer> ejecutivo,
                                @RequestParam List<Integer> estudiantil,
-                               @RequestParam List<Integer> entrada,
-                               @RequestParam List<Integer> postre) {
+                               @RequestParam(required = false) List<Integer> entrada,
+                               @RequestParam(required = false) List<Integer> postre) {
 
         logger.info("Admin publicando menú del día");
 
         menuService.publicarMenu(ejecutivo, estudiantil, entrada, postre);
         return "redirect:/gestion-interna/publicarMenu?publicado=true";
+    }
+
+    @PostMapping("/publicarMenu/eliminar")
+    public String eliminarMenu() {
+        menuService.eliminarMenuHoy();
+        return "redirect:/gestion-interna/publicarMenu";
+    }
+
+    @PostMapping("/publicarMenu/editarDetalle")
+    public String editarDetalle(@RequestParam Integer idDetalle,
+                                @RequestParam Integer idProducto) {
+        menuService.actualizarDetalle(idDetalle, idProducto);
+        return "redirect:/gestion-interna/publicarMenu";
     }
 
     @GetMapping("/reportes")

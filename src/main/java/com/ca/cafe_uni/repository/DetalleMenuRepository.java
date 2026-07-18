@@ -10,6 +10,7 @@ import java.util.List;
 public interface DetalleMenuRepository extends JpaRepository<DetalleMenu,Integer> {
 
     List<DetalleMenu> findByMenuDiario_IdMenuAndDisponibleTrue(Integer idMenu);
-
+    List<DetalleMenu> findByMenuDiario_IdMenu(Integer idMenu);
+    List<DetalleMenu> findByProducto_IdProducto(Integer idProducto);
 
 }
